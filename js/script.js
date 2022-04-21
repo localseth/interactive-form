@@ -1,19 +1,30 @@
-//Declare variables
+/*
+|| Declare variables
+|| primarily accessing DOM elements
+*/
+
+//Form element
+const form = document.getElementsByTagName('form')[0];
+//General info
 const nameField = document.getElementById('name');
 const otherJob = document.getElementById('other-job-role');
 const jobRole = document.getElementById('title');
-
+//Shirt theme
 const colors = document.getElementById('color');
 const shirtTheme = document.getElementById('design');
 const colorOptions = document.querySelectorAll('option[data-theme]');
-const punsTheme = document.querySelectorAll('option[data-theme="js puns"]');
-const heartTheme = document.querySelectorAll('option[data-theme="heart js"]');
-
+//Activities
 const activities = document.getElementById('activities');
 const totalCost = document.getElementById('activities-cost');
 const allActivityCheckBoxes = document.querySelectorAll('[data-cost]');
+//Payment info
+const paymentType = document.getElementById('payment');
+const paymentOptions = paymentType.querySelectorAll(':not([hidden])');
+const paymentDivs = document.querySelectorAll('.payment-methods > div');
 
-//Helper functions
+/*
+|| Helper functions
+*/
 const showHide = (domElement, displayStatus) => {
     domElement.style.display = displayStatus;
 };
@@ -22,21 +33,45 @@ const changeList = (nodeList, displayStatus) => {
     nodeList.forEach(element => showHide(element, displayStatus))
 };
 
+const updateTotal = () => {
+    let newNum = 0;
+    allActivityCheckBoxes.forEach( (item) => {
+        const currentItem = item.getAttribute('data-cost');
+        if (item.checked) {
+            newNum += parseInt(currentItem);
+        }
+    });
+    totalCost.textContent = totalCost.textContent.replace(/\d+$/gm, newNum);
+}
+
+const updatePaymentOption = () => {
+    paymentOptions.forEach(option => {
+        if (option.selected) {
+            for (item of paymentDivs) {
+                if (item.id === option.value) {   
+                showHide(item, '');
+                } else if (item !== paymentDivs[0]) {
+                showHide(item, 'none');
+                }
+            }
+        }
+    });
+}
+
 const setDefault = () => {
     showHide(otherJob, 'none');
     colors.setAttribute('disabled', 'true');
     jobRole.firstElementChild.selected = true;
     shirtTheme.firstElementChild.selected = true;
     colors.firstElementChild.selected = true;
+    paymentOptions[0].selected = true;
     nameField.focus();
+    updateTotal();
+    updatePaymentOption();
 };
 
-const updateTotal = (newNum) => {
-    totalCost.textContent = totalCost.textContent.replace(/\d+$/gm, newNum);
-}
-
 /*
-//Event listeners
+|| Event listeners
 */
 
 //sets default focused field, hidden fields, and disabled fields
@@ -62,29 +97,6 @@ shirtTheme.addEventListener('change', () => {
     document.querySelector('option[data-theme]:not([hidden]').selected = true;
 });
 
-// shirtTheme.addEventListener('change', () => {
-//     console.log('event is working');
-//     colors.removeAttribute('disabled');
-//     if (shirtTheme.value === 'heart js'){
-//         punsTheme.forEach(option => option.setAttribute('hidden', ''));
-//         heartTheme.forEach(option => option.removeAttribute('hidden'));
-//         heartTheme[0].selected = true;
-//     } else if (shirtTheme.value === 'js puns') {
-//         heartTheme.forEach(option => option.setAttribute('hidden', ''));
-//         punsTheme.forEach(option => option.removeAttribute('hidden'));
-//         punsTheme[0].selected = true;
-//     }
-// });
+activities.addEventListener('change', updateTotal);
 
-activities.addEventListener('change', () => {
-    let newNum = 0;
-    allActivityCheckBoxes.forEach( (item) => {
-        
-        const currentItem = item.getAttribute('data-cost');
-        if (item.checked) {
-            newNum += parseInt(currentItem);
-        }
-    });
-    updateTotal(newNum);
-    console.log(newNum);
-});
+paymentType.addEventListener('change', updatePaymentOption);
