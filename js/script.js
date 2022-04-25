@@ -30,6 +30,9 @@ const ccNum = document.getElementById('cc-num');
 const zip = document.getElementById('zip');
 const cvv = document.getElementById('cvv');
 
+//array of elements to be validated
+const validateElements = [nameField, email, allActivityCheckBoxes[0], ccNum, zip, cvv];
+
 /*
 || Helper functions
 */
@@ -64,6 +67,7 @@ const updatePaymentOption = () => {
             }
         }
     });
+
 }
 
 
@@ -83,12 +87,14 @@ const setDefault = () => {
 const nameValidator = () => {
     const nameValue = nameField.value;
     const nameIsValid = /^\s*?\w+ ?\w*? ?\w*?$/gm.test(nameValue);
+    console.log('name valid: ' + nameIsValid);
     return nameIsValid;
 }
 
 const emailValidator = () => {
     const emailValue = email.value;
     const emailIsValid = /^\s*?[^@]+@[^@.]+\.com+$/i.test(emailValue);
+    console.log('email valid: ' + emailIsValid);
     return emailIsValid;
 }
 
@@ -103,26 +109,48 @@ const activitiesValidator = () => {
 
 const ccNumValidator = () => {
     const ccNumValue = ccNum.value;
-    const ccnumIsValid = /^\d{13,16}}$/.test(ccNumValue);
-    return ccnumIsValid;
+    const ccNumIsValid = /^\d{13,16}$/g.test(ccNumValue);
+    console.log('cc number valid: ' + ccNumIsValid);
+    return ccNumIsValid;
 }
 
 const zipValidator = () => {
     const zipValue = zip.value;
-    const zipIsValid = /^\d{5}$/.test(zipValue);
+    const zipIsValid = /^\d{5}$/gm.test(zipValue);
+    console.log('zip valid: ' + zipIsValid);
     return zipIsValid;
 }
 
 const cvvValidator = () => {
     const cvvValue = cvv.value;
-    const cvvIsValid = /^\d{3}$/.test(cvvValue);
+    const cvvIsValid = /^\d{3}$/gm.test(cvvValue);
+    console.log('cvv valid: ' + cvvIsValid);
     return cvvIsValid;
 }
 
-const validateAll = () => {
+//validateAll
+const validateAll = [
+    nameValidator,
+    emailValidator,
+    activitiesValidator,
+    ccNumValidator,
+    zipValidator,
+    cvvValidator
+];
 
+const checkValid = (validator, element) => {
+    target = element.parentElement;
+    if (!validator) {
+        target.classList.add('not-valid');
+        target.classList.remove('valid');
+        target.lastElementChild.style.display = 'flex';
+    }
+    if (validator) {
+        target.classList.remove('not-valid');
+        target.classList.add('valid');
+        target.lastElementChild.style.display = 'none';
+    }
 }
-
 
 /*
 || Event listeners
@@ -159,5 +187,41 @@ activities.addEventListener('change', updateTotal);
 //displays info for selected payment option
 paymentType.addEventListener('change', updatePaymentOption);
 
+// allActivityCheckBoxes.forEach(i => i.addEventListener(['focus', 'blur'], e => {
+//     console.log(e.target, e);
+// }));
+
+const focusBlur = ['focus', 'blur'];
+
+//sets class to "focus" if activity input is in focus
+focusBlur.forEach( (element) => {
+        allActivityCheckBoxes.forEach(i  => {
+            i.addEventListener(element, e => {
+        e.target.parentElement.setAttribute('class', `${element}`);
+        });
+    });
+});
+
 //validates form input
-form.addEventListener('submit', validateAll);
+form.addEventListener('submit', e => {
+    if (paymentOptions[0].selected) {
+        if( ! ccNumValidator() || ! zipValidator() || ! cvvValidator() ) {
+            e.preventDefault();
+            console.log('credit card info has prevented form from being submitted');
+        }
+    }
+    if ( ! nameValidator() || ! emailValidator() || ! activitiesValidator() ) {
+        e.preventDefault();
+        console.log('name, email, or activities has prevented form from being submitted');
+    }
+    //removes items from array of items to be validated if the items are hidden
+    validateElements.forEach( (element, j) => {
+        if ( element === document.querySelector('div[style = "display: none;"] input') ) {
+        validateElements.pop(j);
+        }
+    });
+
+    for (let i = 0; i < validateElements.length; i++){
+        checkValid(validateAll[i](), validateElements[i]);
+    }
+});
