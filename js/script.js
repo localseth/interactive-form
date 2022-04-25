@@ -31,7 +31,7 @@ const zip = document.getElementById('zip');
 const cvv = document.getElementById('cvv');
 
 //array of elements to be validated
-const validateElements = [nameField, email, allActivityCheckBoxes[0], ccNum, zip, cvv];
+const validateElements = [nameField, email, activities.firstElementChild, ccNum, zip, cvv];
 
 /*
 || Helper functions
@@ -187,10 +187,6 @@ activities.addEventListener('change', updateTotal);
 //displays info for selected payment option
 paymentType.addEventListener('change', updatePaymentOption);
 
-// allActivityCheckBoxes.forEach(i => i.addEventListener(['focus', 'blur'], e => {
-//     console.log(e.target, e);
-// }));
-
 const focusBlur = ['focus', 'blur'];
 
 //sets class to "focus" if activity input is in focus
@@ -202,7 +198,28 @@ focusBlur.forEach( (element) => {
     });
 });
 
-//validates form input
+//checks for time conflicts for activity selection
+activities.addEventListener('change', e => {
+    console.log(e.target);
+        if (e.target.checked) {
+            allActivityCheckBoxes.forEach(checkBox => {
+                if (checkBox.dataset.dayAndTime === e.target.dataset.dayAndTime && e.target !== checkBox) {
+                    checkBox.setAttribute('disabled', 'true');
+                    checkBox.parentElement.classList.add('disabled');
+                }
+            });
+        }
+        if (!e.target.checked) {
+            allActivityCheckBoxes.forEach(checkBox => {
+                if (checkBox.dataset.dayAndTime === e.target.dataset.dayAndTime && e.target !== checkBox) {
+                    checkBox.removeAttribute('disabled');
+                    checkBox.parentElement.classList.remove('disabled');
+                }
+            });
+        }
+});
+
+//validates form input and prevents submit if there are errors
 form.addEventListener('submit', e => {
     if (paymentOptions[0].selected) {
         if( ! ccNumValidator() || ! zipValidator() || ! cvvValidator() ) {
