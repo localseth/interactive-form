@@ -40,9 +40,9 @@ const showHide = (domElement, displayStatus) => {
     domElement.style.display = displayStatus;
 };
 
-const changeList = (nodeList, displayStatus) => {
-    nodeList.forEach(element => showHide(element, displayStatus))
-};
+// const changeList = (nodeList, displayStatus) => {
+//     nodeList.forEach(element => showHide(element, displayStatus))
+// };
 
 const updateTotal = () => {
     let newNum = 0;
@@ -87,14 +87,12 @@ const setDefault = () => {
 const nameValidator = () => {
     const nameValue = nameField.value;
     const nameIsValid = /^\s*?\w+ ?\w*? ?\w*?$/gm.test(nameValue);
-    console.log('name valid: ' + nameIsValid);
     return nameIsValid;
 }
 
 const emailValidator = () => {
     const emailValue = email.value;
     const emailIsValid = /^\s*?[^@]+@[^@.]+\.com+$/i.test(emailValue);
-    console.log('email valid: ' + emailIsValid);
     return emailIsValid;
 }
 
@@ -110,21 +108,18 @@ const activitiesValidator = () => {
 const ccNumValidator = () => {
     const ccNumValue = ccNum.value;
     const ccNumIsValid = /^\d{13,16}$/g.test(ccNumValue);
-    console.log('cc number valid: ' + ccNumIsValid);
     return ccNumIsValid;
 }
 
 const zipValidator = () => {
     const zipValue = zip.value;
     const zipIsValid = /^\d{5}$/gm.test(zipValue);
-    console.log('zip valid: ' + zipIsValid);
     return zipIsValid;
 }
 
 const cvvValidator = () => {
     const cvvValue = cvv.value;
     const cvvIsValid = /^\d{3}$/gm.test(cvvValue);
-    console.log('cvv valid: ' + cvvIsValid);
     return cvvIsValid;
 }
 
@@ -138,6 +133,7 @@ const validateAll = [
     cvvValidator
 ];
 
+//checks validity of input fields and displays errors
 const checkValid = (validator, element) => {
     target = element.parentElement;
     if (!validator) {
@@ -217,6 +213,11 @@ activities.addEventListener('change', e => {
                 }
             });
         }
+});
+
+//validates a field and displays error in real time
+email.addEventListener('keyup', () => {
+    checkValid(emailValidator(), email);
 });
 
 //validates form input and prevents submit if there are errors

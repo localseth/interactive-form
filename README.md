@@ -5,7 +5,10 @@ This project takes a basic form and provide user interactivity by using JavaScri
 
 There may be modification to the CSS, we'll see.
 ## Helper Functions
-### focusOrBlur(domElement, status)
-This function allows you to set focus or blur on a DOM element defined in the parameters. You pass in the element and either a string 'focus', or 'blur.'
-### showHide(domElement, displayStatus)
-This function is like focusOrBlur but accesses the display style attribute. The string `'none'` will cause the element to be hidden, and an empty string will cause the element to return to its original state.
+### Display Functions
+the `showHide(domElement, displayStatus)` function accesses the display style attribute and changes its status. The string `'none'` will cause the element to be hidden, and an empty string will cause the element to return to its original state.
+
+## Special Features
+### Real-time Field Validation
+An event listener has been added to the email form field to check if the text typed by the user matches
+the correct format.
