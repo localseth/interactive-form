@@ -1,6 +1,5 @@
 /*
-|| Declare variables
-|| primarily accessing DOM elements
+|| Declare variables - accessing DOM elements
 */
 
 //Form element
@@ -39,10 +38,6 @@ const validateElements = [nameField, email, activities.firstElementChild, ccNum,
 const showHide = (domElement, displayStatus) => {
     domElement.style.display = displayStatus;
 };
-
-// const changeList = (nodeList, displayStatus) => {
-//     nodeList.forEach(element => showHide(element, displayStatus))
-// };
 
 const updateTotal = () => {
     let newNum = 0;
@@ -91,8 +86,19 @@ const nameValidator = () => {
 }
 
 const emailValidator = () => {
+    let hintText = email.parentElement.lastElementChild
     const emailValue = email.value;
-    const emailIsValid = /^\s*?[^@]+@[^@.]+\.com+$/i.test(emailValue);
+    const valid = /^\s*?[^@]+@[^@.]+\.com+$/i
+    const emailIsValid = valid.test(emailValue);
+    if (/^[\w\.]+@\w*\.\w*(?!(com))$/ig.test(emailValue)) {
+       hintText.innerText = 'Email address must end with ".com"';
+    } else if (/^\s*?$/g.test(emailValue)) {
+        hintText.innerText = 'Email address must not be left blank';
+    } else if(!valid.test(emailValue)) {
+        hintText.innerHTML = 'Email address must be formatted correctly.<br>'
+        hintText.insertAdjacentHTML('beforeend', 'Example: user@website.com');
+        hintText.setAttribute('style','flex-flow: column');
+    }
     return emailIsValid;
 }
 
@@ -196,28 +202,30 @@ focusBlur.forEach( (element) => {
 
 //checks for time conflicts for activity selection
 activities.addEventListener('change', e => {
-    console.log(e.target);
-        if (e.target.checked) {
-            allActivityCheckBoxes.forEach(checkBox => {
-                if (checkBox.dataset.dayAndTime === e.target.dataset.dayAndTime && e.target !== checkBox) {
-                    checkBox.setAttribute('disabled', 'true');
-                    checkBox.parentElement.classList.add('disabled');
-                }
-            });
-        }
-        if (!e.target.checked) {
-            allActivityCheckBoxes.forEach(checkBox => {
-                if (checkBox.dataset.dayAndTime === e.target.dataset.dayAndTime && e.target !== checkBox) {
-                    checkBox.removeAttribute('disabled');
-                    checkBox.parentElement.classList.remove('disabled');
-                }
-            });
-        }
+    if (e.target.checked) {
+        allActivityCheckBoxes.forEach(checkBox => {
+            if (checkBox.dataset.dayAndTime === e.target.dataset.dayAndTime && e.target !== checkBox) {
+                checkBox.setAttribute('disabled', 'true');
+                checkBox.parentElement.classList.add('disabled');
+            }
+        });
+    }
+    if (!e.target.checked) {
+        allActivityCheckBoxes.forEach(checkBox => {
+            if (checkBox.dataset.dayAndTime === e.target.dataset.dayAndTime && e.target !== checkBox) {
+                checkBox.removeAttribute('disabled');
+                checkBox.parentElement.classList.remove('disabled');
+            }
+        });
+    }
 });
 
 //validates a field and displays error in real time
-email.addEventListener('keyup', () => {
-    checkValid(emailValidator(), email);
+const emailEvents = ['blur', 'keyup'];
+emailEvents.forEach( event => {
+    email.addEventListener(event, () => {
+        checkValid(emailValidator(), email);
+    });
 });
 
 //validates form input and prevents submit if there are errors
@@ -238,7 +246,7 @@ form.addEventListener('submit', e => {
         validateElements.pop(j);
         }
     });
-
+    //checks every input field and displays errors if there are any
     for (let i = 0; i < validateElements.length; i++){
         checkValid(validateAll[i](), validateElements[i]);
     }
