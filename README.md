@@ -6,6 +6,7 @@ This project takes a basic form and provide user interactivity by using JavaScri
 ### Display Functions
 There are a variety of functions that help organize the code. Below are the most important helper functions and function types.
 
+####
 The `showHide(domElement, displayStatus)` function accesses the display style attribute and changes its status. The string `'none'` will cause the element to be hidden, and an empty string will cause the element to return to its original state.
 
 The `updateTotal` function will keep a running total of the cost of events for which the user signs up whereas the `updatePaymentOption` will dislpay only the payment information for the payment option the user selects.
@@ -20,6 +21,6 @@ There are two functions that work differently. `validateAll` is an array of all 
 ## Special Features
 ### Real-time Field Validation
 An event listener has been added to the email form field to check if the text typed by the user matches
-the correct format. A warning icon is displayed as long as the text input by the user does not match the required format. A green check mark is displayed once the user enters text in the required format.
+the correct format. Warnings will noly display once the user navigates away from the field, however the green check confirming that the text entered matches the required format will appear as soon as that format and text match.
 ### Conditional Error Message
 For the email form field, the validator will check if the text entered is only white space, contains a web address other than ".com", or if neither of the previous cases are true and will display a hint appropriate for the text that has been entered.

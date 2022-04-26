@@ -35,10 +35,13 @@ const validateElements = [nameField, email, activities.firstElementChild, ccNum,
 /*
 || Helper functions
 */
+
+//Display or hide an element passed into the function ('none' for displayStatus will hide the element, '' will reveal it)
 const showHide = (domElement, displayStatus) => {
     domElement.style.display = displayStatus;
 };
 
+//Totals the cost for each selected activity
 const updateTotal = () => {
     let newNum = 0;
     allActivityCheckBoxes.forEach( (item) => {
@@ -50,6 +53,7 @@ const updateTotal = () => {
     totalCost.textContent = totalCost.textContent.replace(/\d+$/gm, newNum);
 }
 
+//Hides unselected payment options
 const updatePaymentOption = () => {
     paymentOptions.forEach(option => {
         if (option.selected) {
@@ -65,7 +69,7 @@ const updatePaymentOption = () => {
 
 }
 
-
+//Default focus, displayed/hidden fields, and selected options
 const setDefault = () => {
     showHide(otherJob, 'none');
     colors.setAttribute('disabled', 'true');
@@ -78,7 +82,7 @@ const setDefault = () => {
     updatePaymentOption();
 };
 
-//form field validators
+//Form field validators
 const nameValidator = () => {
     const nameValue = nameField.value;
     const nameIsValid = /^\s*?\w+ ?\w*? ?\w*?$/gm.test(nameValue);
@@ -88,17 +92,18 @@ const nameValidator = () => {
 const emailValidator = () => {
     let hintText = email.parentElement.lastElementChild
     const emailValue = email.value;
-    const valid = /^\s*?[^@]+@[^@.]+\.com+$/i
+    const valid = /^\s*?[^@]+@[^@.]+\.\w+$/i
     const emailIsValid = valid.test(emailValue);
-    if (/^[\w\.]+@\w*\.\w*(?!(com))$/ig.test(emailValue)) {
-       hintText.innerText = 'Email address must end with ".com"';
-    } else if (/^\s*?$/g.test(emailValue)) {
+    if (/^\s*?$/g.test(emailValue)) {
         hintText.innerText = 'Email address must not be left blank';
     } else if(!valid.test(emailValue)) {
         hintText.innerHTML = 'Email address must be formatted correctly.<br>'
         hintText.insertAdjacentHTML('beforeend', 'Example: user@website.com');
         hintText.setAttribute('style','flex-flow: column');
     }
+    if (!emailIsValid) {
+        console.log('email is invalid!')
+    };
     return emailIsValid;
 }
 
@@ -158,10 +163,10 @@ const checkValid = (validator, element) => {
 || Event listeners
 */
 
-//sets default focused field, hidden fields, and disabled fields
+//Sets default focused field, hidden fields, and disabled fields
 window.addEventListener('load', setDefault);
 
-//hides 'other' job role option unless 'other' is selected from the dropdown
+//Hides 'other' job role option unless 'other' is selected from the dropdown
 jobRole.addEventListener('change', () => {
     if (jobRole.value === 'other') {
         showHide(otherJob, '');
@@ -170,7 +175,7 @@ jobRole.addEventListener('change', () => {
     }
 });
 
-//displays only the shirt color options associate with the selected shirt theme
+//Displays only the shirt color options associate with the selected shirt theme
 shirtTheme.addEventListener('change', () => {
     colors.removeAttribute('disabled');
     colorOptions.forEach((i) => {
@@ -183,15 +188,15 @@ shirtTheme.addEventListener('change', () => {
     document.querySelector('option[data-theme]:not([hidden]').selected = true;
 });
 
-//updates total balance each time an activity is selected
+//Updates total balance each time an activity is selected
 activities.addEventListener('change', updateTotal);
 
-//displays info for selected payment option
+//Displays info for selected payment option
 paymentType.addEventListener('change', updatePaymentOption);
 
 const focusBlur = ['focus', 'blur'];
 
-//sets class to "focus" if activity input is in focus
+//Sets class to "focus" if activity input is in focus
 focusBlur.forEach( (element) => {
         allActivityCheckBoxes.forEach(i  => {
             i.addEventListener(element, e => {
@@ -200,7 +205,7 @@ focusBlur.forEach( (element) => {
     });
 });
 
-//checks for time conflicts for activity selection
+//Checks for time conflicts for activity selection
 activities.addEventListener('change', e => {
     if (e.target.checked) {
         allActivityCheckBoxes.forEach(checkBox => {
@@ -220,15 +225,21 @@ activities.addEventListener('change', e => {
     }
 });
 
-//validates a field and displays error in real time
-const emailEvents = ['blur', 'keyup'];
-emailEvents.forEach( event => {
-    email.addEventListener(event, () => {
-        checkValid(emailValidator(), email);
-    });
+//Displays a confirmation or warning once the user has entered an email adress
+email.addEventListener( 'blur', () => {
+    checkValid(emailValidator(), email);
 });
 
-//validates form input and prevents submit if there are errors
+// email.addEventListener( 'blur', checkValid(emailValidator, email) );
+
+//Displays a confirmation only if emailValidator() returns true
+email.addEventListener('keyup', () => {
+    if (emailValidator()) {
+        checkValid(emailValidator(), email)
+    }
+});
+
+//Validates form input and prevents submit if there are errors
 form.addEventListener('submit', e => {
     if (paymentOptions[0].selected) {
         if( ! ccNumValidator() || ! zipValidator() || ! cvvValidator() ) {
@@ -246,7 +257,7 @@ form.addEventListener('submit', e => {
         validateElements.pop(j);
         }
     });
-    //checks every input field and displays errors if there are any
+    //Checks every input field and displays errors if there are any
     for (let i = 0; i < validateElements.length; i++){
         checkValid(validateAll[i](), validateElements[i]);
     }
