@@ -85,7 +85,8 @@ const setDefault = () => {
 //Form field validators
 const nameValidator = () => {
     const nameValue = nameField.value;
-    const nameIsValid = /^\s*?\w+ ?\w*? ?\w*?$/gm.test(nameValue);
+    const nameRegex = /(.|\s)*\S(.|\s)*/gm;
+    const nameIsValid = nameRegex.test(nameValue);
     return nameIsValid;
 }
 
@@ -236,6 +237,18 @@ email.addEventListener( 'blur', () => {
 email.addEventListener('keyup', () => {
     if (emailValidator()) {
         checkValid(emailValidator(), email)
+    }
+});
+
+//Displays a confirmation or warning once the user has entered an email adress
+nameField.addEventListener( 'blur', () => {
+    checkValid(nameValidator(), nameField);
+});
+
+//Displays a confirmation only if nameValidator() returns true
+nameField.addEventListener('keyup', () => {
+    if (nameValidator()) {
+        checkValid(nameValidator(), nameField)
     }
 });
 

@@ -21,6 +21,6 @@ There are two functions that work differently. `validateAll` is an array of all 
 ## Special Features
 ### Real-time Field Validation
 An event listener has been added to the email form field to check if the text typed by the user matches
-the correct format. Warnings will noly display once the user navigates away from the field, however the green check confirming that the text entered matches the required format will appear as soon as that format and text match.
+the correct format. Warnings will only display once the user navigates away from the field, however the green check confirming that the text entered matches the required format will appear as soon as that format and text match.
 ### Conditional Error Message
 For the email form field, the validator will check if the text entered is only white space and will display a hint specific to that scenario once the `checkValid()` function is called. If there is any text, but it does not match the required format, it will display a different hint.
