@@ -1,7 +1,7 @@
 # interactive-form-project
 
 ## Overview
-This project takes a basic form and provide user interactivity by using JavaScript. All the HTML and CSS has been supplied by Treehouse, whereas the JavaScript has been written by myself according the the rubric in the Treehouse course.
+This project takes a basic form and provide user interactivity by using JavaScript. All the HTML and CSS has been supplied by Treehouse, whereas the JavaScript has been written by myself according the the rubric in the Treehouse course. View the demo [here](https://localseth.github.io/interactive-form-project/).
 ## Helper Functions
 ### Display Functions
 There are a variety of functions that help organize the code. Below are the most important helper functions and function types.
