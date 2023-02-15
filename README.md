@@ -1,5 +1,5 @@
 # interactive-form-project
-Treehouse Techdegree project for unit 7
+
 ## Overview
 This project takes a basic form and provide user interactivity by using JavaScript. All the HTML and CSS has been supplied by Treehouse, whereas the JavaScript has been written by myself according the the rubric in the Treehouse course.
 ## Helper Functions
